@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>WorkFlowOS CRM</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #f4f6f8;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            min-height: 100vh;
+        }
+
+        .container {
+
+            width: 500px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0,0,0,0.08);
+        }
+
+        h1 {
+
+            margin-top: 0;
+
+            color: #20242a;
+        }
+
+        p {
+
+            color: #707780;
+        }
+
+        label {
+
+            display: block;
+
+            margin-top: 20px;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+        textarea {
+
+            height: 120px;
+        }
+
+        button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #059669;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+
+            background: #047857;
+        }
+
+        #result {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #ecfdf5;
+
+            color: #065f46;
+
+            border-radius: 8px;
+
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>Customer CRM</h1>
+
+    <p>
+        Update the customer's record.
+    </p>
+
+
+    <form id="crmForm">
+
+
+        <label>
+            Customer Name
+        </label>
+
+        <input
+            id="customerName"
+            name="customerName"
+            type="text"
+            placeholder="Customer name"
+            required
+        >
+
+
+        <label>
+            Request
+        </label>
+
+        <textarea
+            id="request"
+            name="request"
+            placeholder="Customer request"
+            required
+        ></textarea>
+
+
+        <button type="submit">
+
+            Update Customer
+
+        </button>
+
+
+    </form>
+
+
+    <div id="result"></div>
+
+
+</div>
+
+
+<script>
+
+const BACKEND_URL =
+    "http://127.0.0.1:8000/events";
+
+
+/* ============================================================
+   WORKFLOWOS ACTIVITY TRACKER
+   ============================================================ */
+
+function trackEvent(
+    eventType,
+    target,
+    metadata = {}
+) {
+
+    const event = {
+
+        timestamp:
+            new Date().toISOString(),
+
+        application:
+            "Customer CRM",
+
+        event_type:
+            eventType,
+
+        window_title:
+            document.title,
+
+        metadata: {
+
+            target: target,
+
+            url: window.location.href,
+
+            ...metadata
+        }
+    };
+
+
+    fetch(
+        BACKEND_URL,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(event)
+        }
+    )
+    .catch(
+        error =>
+            console.error(
+                "WorkFlowOS tracking error:",
+                error
+            )
+    );
+}
+
+
+/* ============================================================
+   PAGE OPEN
+   ============================================================ */
+
+trackEvent(
+    "BROWSER_NAVIGATE",
+    "Customer CRM"
+);
+
+
+/* ============================================================
+   INPUT TRACKING
+   ============================================================ */
+
+document
+    .getElementById("customerName")
+    .addEventListener(
+        "change",
+        function() {
+
+            trackEvent(
+                "BROWSER_INPUT",
+                "customerName"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("request")
+    .addEventListener(
+        "change",
+        function() {
+
+            trackEvent(
+                "BROWSER_INPUT",
+                "request"
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   FORM SUBMISSION
+   ============================================================ */
+
+const form =
+    document.getElementById(
+        "crmForm"
+    );
+
+
+const result =
+    document.getElementById(
+        "result"
+    );
+
+
+form.addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+
+        const customer =
+            document.getElementById(
+                "customerName"
+            ).value;
+
+
+        const request =
+            document.getElementById(
+                "request"
+            ).value;
+
+
+        trackEvent(
+            "BROWSER_SUBMIT",
+            "crm_update",
+            {
+                customer: customer,
+                request: request
+            }
+        );
+
+
+        result.style.display =
+            "block";
+
+
+        result.innerHTML =
+            `
+            <strong>
+                Customer record updated.
+            </strong>
+
+            <br><br>
+
+            Customer:
+            ${customer}
+            `;
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

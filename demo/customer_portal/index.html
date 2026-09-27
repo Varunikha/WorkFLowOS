@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WorkFlowOS Customer Portal</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            background: #f4f6f8;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .container {
+
+            width: 500px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+
+            margin-top: 0;
+
+            color: #20242a;
+        }
+
+        p {
+
+            color: #707780;
+        }
+
+        label {
+
+            display: block;
+
+            margin-top: 20px;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+        textarea {
+
+            height: 120px;
+
+            resize: vertical;
+        }
+
+        button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+
+            background: #1d4ed8;
+        }
+
+        #result {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #ecfdf5;
+
+            color: #065f46;
+
+            border-radius: 8px;
+
+            display: none;
+        }
+
+        #trackerStatus {
+
+            margin-top: 15px;
+
+            padding: 8px 12px;
+
+            border-radius: 6px;
+
+            font-size: 12px;
+
+            background: #ecfdf5;
+
+            color: #065f46;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>
+        Customer Portal
+    </h1>
+
+    <p>
+        Submit a customer request.
+    </p>
+
+
+    <div id="trackerStatus">
+        WorkFlowOS Activity Tracking: Initializing...
+    </div>
+
+
+    <form id="requestForm">
+
+
+        <label for="customerName">
+            Customer Name
+        </label>
+
+        <input
+            id="customerName"
+            name="customerName"
+            type="text"
+            placeholder="Enter customer name"
+            required
+        >
+
+
+        <label for="email">
+            Email
+        </label>
+
+        <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="customer@example.com"
+            required
+        >
+
+
+        <label for="request">
+            Request
+        </label>
+
+        <textarea
+            id="request"
+            name="request"
+            placeholder="Describe the customer request..."
+            required
+        ></textarea>
+
+
+        <button type="submit">
+            Submit Request
+        </button>
+
+
+    </form>
+
+
+    <div id="result"></div>
+
+
+</div>
+
+
+<script>
+
+/* ============================================================
+   WORKFLOWOS BROWSER ACTIVITY TRACKER
+   ============================================================ */
+
+const WORKFLOWOS_API =
+    "http://127.0.0.1:8000/events";
+
+
+const trackerStatus =
+    document.getElementById(
+        "trackerStatus"
+    );
+
+
+/* ============================================================
+   SEND EVENT TO WORKFLOWOS
+   ============================================================ */
+
+async function trackEvent(
+    eventType,
+    target,
+    metadata = {}
+) {
+
+    const event = {
+
+        timestamp:
+            new Date().toISOString(),
+
+        application:
+            "Customer Portal",
+
+        event_type:
+            eventType,
+
+        window_title:
+            document.title,
+
+        metadata: {
+
+            target: target,
+
+            url:
+                window.location.href,
+
+            ...metadata
+        }
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                WORKFLOWOS_API,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(event)
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+
+        const result =
+            await response.json();
+
+
+        trackerStatus.textContent =
+            "WorkFlowOS Activity Tracking: Active";
+
+
+        console.log(
+            "WorkFlowOS event recorded:",
+            result
+        );
+
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        trackerStatus.textContent =
+            "WorkFlowOS Activity Tracking: Offline";
+
+
+        trackerStatus.style.background =
+            "#fef2f2";
+
+
+        trackerStatus.style.color =
+            "#991b1b";
+
+
+        console.error(
+            "WorkFlowOS tracking failed:",
+            error
+        );
+
+
+        return false;
+    }
+}
+
+
+/* ============================================================
+   PAGE NAVIGATION
+   ============================================================ */
+
+trackEvent(
+    "BROWSER_NAVIGATE",
+    "Customer Portal"
+);
+
+
+/* ============================================================
+   INPUT EVENTS
+   ============================================================ */
+
+document
+    .getElementById("customerName")
+    .addEventListener(
+        "change",
+        function () {
+
+            trackEvent(
+                "BROWSER_INPUT",
+                "customerName"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("email")
+    .addEventListener(
+        "change",
+        function () {
+
+            trackEvent(
+                "BROWSER_INPUT",
+                "email"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("request")
+    .addEventListener(
+        "change",
+        function () {
+
+            trackEvent(
+                "BROWSER_INPUT",
+                "request"
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   FORM SUBMISSION
+   ============================================================ */
+
+document
+    .getElementById("requestForm")
+    .addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const customer =
+                document
+                    .getElementById(
+                        "customerName"
+                    )
+                    .value;
+
+
+            const email =
+                document
+                    .getElementById(
+                        "email"
+                    )
+                    .value;
+
+
+            const request =
+                document
+                    .getElementById(
+                        "request"
+                    )
+                    .value;
+
+
+            const requestId =
+                "REQ-" +
+                Math.floor(
+                    1000 +
+                    Math.random() * 9000
+                );
+
+
+            await trackEvent(
+                "BROWSER_SUBMIT",
+                "customer_request",
+                {
+                    customer:
+                        customer,
+
+                    email:
+                        email,
+
+                    request:
+                        request,
+
+                    request_id:
+                        requestId
+                }
+            );
+
+
+            const result =
+                document.getElementById(
+                    "result"
+                );
+
+
+            result.style.display =
+                "block";
+
+
+            result.innerHTML =
+                `
+                <strong>
+                    Request submitted successfully.
+                </strong>
+
+                <br><br>
+
+                Request ID:
+                ${requestId}
+
+                <br>
+
+                Customer:
+                ${customer}
+
+                <br>
+
+                Request:
+                ${request}
+                `;
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

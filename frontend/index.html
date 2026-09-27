@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkFlowOS</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+.main {
+    min-height: 100vh;
+    padding: 38px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: #2563eb;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+}
+
+.header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.refresh {
+    background: #2563eb;
+    color: white;
+    border: 0;
+    padding: 11px 19px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 650;
+    font-family: inherit;
+}
+
+.refresh:hover {
+    background: #1d4ed8;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat {
+    background: white;
+    border-radius: 13px;
+    padding: 21px;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.automation-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 22px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.card-header p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-detected {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.green-dot {
+    background: #16a34a;
+}
+
+.yellow-dot {
+    background: #f59e0b;
+}
+
+.workflow-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.workflow-description {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    max-width: 850px;
+}
+
+.workflow-flow {
+    display: grid;
+    grid-template-columns: 1fr 50px 1fr 50px 1fr;
+    align-items: center;
+    margin: 28px 0;
+}
+
+.flow-node {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.flow-icon {
+    font-size: 25px;
+    margin-bottom: 9px;
+}
+
+.flow-name {
+    font-weight: 750;
+}
+
+.flow-description {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.flow-arrow {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.info-box {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.info-label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    font-weight: 750;
+    letter-spacing: 0.4px;
+}
+
+.info-value {
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.actions {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #eef2f7;
+}
+
+.approve-btn {
+    background: #16a34a;
+    color: white;
+    border: 0;
+    padding: 12px 20px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+}
+
+.approve-btn:hover {
+    background: #15803d;
+}
+
+.approve-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.execution-section {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #eef2f7;
+}
+
+.execution-title {
+    font-size: 14px;
+    font-weight: 750;
+    margin-bottom: 12px;
+}
+
+.execution-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.success-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+}
+
+.empty {
+    text-align: center;
+    padding: 55px;
+    color: #64748b;
+}
+
+.error {
+    color: #b91c1c;
+}
+
+#toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #111827;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 9px;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+@media(max-width: 900px) {
+
+    .main {
+        padding: 25px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .workflow-flow {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .flow-arrow {
+        transform: rotate(90deg);
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="main">
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="logo-mark">
+                W
+            </div>
+
+            <div>
+
+                <h1>WorkFlowOS</h1>
+
+                <p>
+                    AI-powered workflow automation from observed activity
+                </p>
+
+            </div>
+
+        </div>
+
+        <button
+            class="refresh"
+            onclick="loadDashboard()"
+        >
+            ↻ Refresh
+        </button>
+
+    </header>
+
+
+    <!-- STATS -->
+
+    <section class="stats">
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Detected Workflows
+            </div>
+
+            <div
+                class="stat-value"
+                id="detectedCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Active Automations
+            </div>
+
+            <div
+                class="stat-value"
+                id="activeCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Executions
+            </div>
+
+            <div
+                class="stat-value"
+                id="executionCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Success Rate
+            </div>
+
+            <div
+                class="stat-value"
+                id="successRate"
+            >
+                —
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- AUTOMATION -->
+
+    <section class="automation-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2 id="cardTitle">
+                    Automation Detection
+                </h2>
+
+                <p id="cardSubtitle">
+                    Monitoring your activity for repeated workflows
+                </p>
+
+            </div>
+
+            <span
+                id="statusBadge"
+                class="badge badge-detected"
+            >
+                <span
+                    id="statusDot"
+                    class="dot yellow-dot"
+                ></span>
+
+                <span id="statusText">
+                    Detecting
+                </span>
+
+            </span>
+
+        </div>
+
+
+        <div id="automationContent">
+
+            <div class="empty">
+                Loading activity...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<div id="toast"></div>
+
+
+<script>
+
+const API = "http://localhost:8000";
+
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+
+        toast.style.display = "none";
+
+    }, 3000);
+}
+
+
+async function api(path, options = {}) {
+
+    const response = await fetch(
+        API + path,
+        {
+            ...options,
+
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        }
+    );
+
+    if (!response.ok) {
+
+        throw new Error(
+            `HTTP ${response.status}`
+        );
+
+    }
+
+    return response.json();
+}
+
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+/* ============================================================
+   FLOW DISPLAY
+   ============================================================ */
+
+function workflowFlow() {
+
+    return `
+
+        <div class="workflow-flow">
+
+            <div class="flow-node">
+
+                <div class="flow-icon">
+                    🌐
+                </div>
+
+                <div class="flow-name">
+                    Customer Portal
+                </div>
+
+                <div class="flow-description">
+                    Customer request submitted
+                </div>
+
+            </div>
+
+
+            <div class="flow-arrow">
+                →
+            </div>
+
+
+            <div class="flow-node">
+
+                <div class="flow-icon">
+                    💼
+                </div>
+
+                <div class="flow-name">
+                    CRM
+                </div>
+
+                <div class="flow-description">
+                    Customer record updated
+                </div>
+
+            </div>
+
+
+            <div class="flow-arrow">
+                →
+            </div>
+
+
+            <div class="flow-node">
+
+                <div class="flow-icon">
+                    🔔
+                </div>
+
+                <div class="flow-name">
+                    Notifications
+                </div>
+
+                <div class="flow-description">
+                    Team notified
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+/* ============================================================
+   ACTIVE WORKFLOW
+   ============================================================ */
+
+function renderActiveWorkflow(workflow) {
+
+    const container =
+        document.getElementById(
+            "automationContent"
+        );
+
+    const execution =
+        workflow.execution || {};
+
+    const executions =
+        execution.executions || 0;
+
+    const successful =
+        execution.successful_executions || 0;
+
+    const failed =
+        execution.failed_executions || 0;
+
+    const rate =
+        executions > 0
+            ? Math.round(
+                (successful / executions) * 100
+              ) + "%"
+            : "—";
+
+
+    document.getElementById(
+        "cardTitle"
+    ).textContent =
+        "Active Automation";
+
+
+    document.getElementById(
+        "cardSubtitle"
+    ).textContent =
+        "This workflow is automatically executed when the trigger is detected.";
+
+
+    document.getElementById(
+        "statusText"
+    ).textContent =
+        "Active";
+
+
+    document.getElementById(
+        "statusBadge"
+    ).className =
+        "badge badge-active";
+
+
+    document.getElementById(
+        "statusDot"
+    ).className =
+        "dot green-dot";
+
+
+    container.innerHTML = `
+
+        <div class="workflow-title">
+
+            ${escapeHtml(
+                workflow.name ||
+                "Customer Request Automation"
+            )}
+
+        </div>
+
+
+        <div class="workflow-description">
+
+            ${escapeHtml(
+                workflow.description ||
+                "Automatically processes customer requests by updating the CRM and notifying the team."
+            )}
+
+        </div>
+
+
+        ${workflowFlow()}
+
+
+        <div class="info-grid">
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Trigger
+                </div>
+
+                <div class="info-value">
+
+                    ${escapeHtml(
+                        workflow.trigger?.description ||
+                        "Customer request submitted"
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Observed Repetitions
+                </div>
+
+                <div class="info-value">
+
+                    ${
+                        workflow.source?.occurrences ??
+                        workflow.occurrences ??
+                        "—"
+                    }
+
+                    times
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Confidence
+                </div>
+
+                <div class="info-value">
+
+                    ${formatConfidence(workflow)}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="execution-section">
+
+            <div class="execution-title">
+                Automation Performance
+            </div>
+
+            <div class="execution-status">
+
+                <span class="success-dot"></span>
+
+                <span>
+
+                    ${executions}
+                    execution${executions === 1 ? "" : "s"}
+
+                    · ${successful} successful
+
+                    · ${failed} failed
+
+                    · ${rate} success rate
+
+                </span>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+/* ============================================================
+   DETECTED WORKFLOW
+   ============================================================ */
+
+function renderDetectedWorkflow(rec) {
+
+    const container =
+        document.getElementById(
+            "automationContent"
+        );
+
+
+    document.getElementById(
+        "cardTitle"
+    ).textContent =
+        "Automation Detected";
+
+
+    document.getElementById(
+        "cardSubtitle"
+    ).textContent =
+        "WorkFlowOS detected a repeated sequence in your activity.";
+
+
+    document.getElementById(
+        "statusText"
+    ).textContent =
+        "Approval Required";
+
+
+    document.getElementById(
+        "statusBadge"
+    ).className =
+        "badge badge-detected";
+
+
+    document.getElementById(
+        "statusDot"
+    ).className =
+        "dot yellow-dot";
+
+
+    const repetitions =
+        rec.occurrences ?? 0;
+
+
+    const confidence =
+        rec.confidence !== undefined
+            ? Math.round(
+                rec.confidence * 100
+              ) + "%"
+            : "—";
+
+
+    container.innerHTML = `
+
+        <div class="workflow-title">
+
+            ${escapeHtml(
+                rec.title ||
+                rec.intent ||
+                "Customer Request Automation"
+            )}
+
+        </div>
+
+
+        <div class="workflow-description">
+
+            ${escapeHtml(
+                rec.description ||
+                rec.message ||
+                "A repeated workflow has been detected and can now be converted into an automation."
+            )}
+
+        </div>
+
+
+        ${workflowFlow()}
+
+
+        <div class="info-grid">
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Repetitions
+                </div>
+
+                <div class="info-value">
+                    ${repetitions} times
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Confidence
+                </div>
+
+                <div class="info-value">
+                    ${confidence}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Trigger
+                </div>
+
+                <div class="info-value">
+
+                    ${escapeHtml(
+                        rec.trigger ||
+                        "Customer request submitted"
+                    )}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="approveButton"
+                class="approve-btn"
+                onclick="approveWorkflow('${escapeHtml(rec.workflow_id)}')"
+            >
+                ✓ Approve Automation
+            </button>
+
+        </div>
+
+    `;
+}
+
+
+/* ============================================================
+   CONFIDENCE
+   ============================================================ */
+
+function formatConfidence(workflow) {
+
+    const confidence =
+        workflow.source?.confidence ??
+        workflow.confidence;
+
+
+    if (
+        confidence === undefined ||
+        confidence === null
+    ) {
+
+        return "—";
+
+    }
+
+
+    return Math.round(
+        confidence * 100
+    ) + "%";
+
+}
+
+
+/* ============================================================
+   APPROVE
+   ============================================================ */
+
+async function approveWorkflow(workflowId) {
+
+    const button =
+        document.getElementById(
+            "approveButton"
+        );
+
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.textContent =
+            "Generating automation...";
+
+    }
+
+
+    try {
+
+        /*
+         * Generate and save the executable workflow.
+         */
+
+        await api(
+            `/workflows/generate/${workflowId}`,
+            {
+                method: "POST"
+            }
+        );
+
+
+        /*
+         * Activate it.
+         */
+
+        const result =
+            await api(
+                `/workflows/${workflowId}/approve`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        if (!result.success) {
+
+            throw new Error(
+                "Workflow approval failed."
+            );
+
+        }
+
+
+        showToast(
+            "Automation approved and activated!"
+        );
+
+
+        await loadDashboard();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Could not activate automation."
+        );
+
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.textContent =
+                "✓ Approve Automation";
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   UPDATE STATS
+   ============================================================ */
+
+function updateStats(workflows) {
+
+    const active =
+        workflows.filter(
+            workflow =>
+                workflow.status === "active"
+        );
+
+
+    document.getElementById(
+        "detectedCount"
+    ).textContent =
+        workflows.length;
+
+
+    document.getElementById(
+        "activeCount"
+    ).textContent =
+        active.length;
+
+
+    let executions = 0;
+
+    let successful = 0;
+
+
+    workflows.forEach(
+        workflow => {
+
+            const execution =
+                workflow.execution || {};
+
+
+            executions +=
+                execution.executions || 0;
+
+
+            successful +=
+                execution.successful_executions || 0;
+
+        }
+    );
+
+
+    document.getElementById(
+        "executionCount"
+    ).textContent =
+        executions;
+
+
+    document.getElementById(
+        "successRate"
+    ).textContent =
+        executions > 0
+            ? Math.round(
+                (successful / executions) * 100
+              ) + "%"
+            : "—";
+
+}
+
+
+/* ============================================================
+   LOAD DASHBOARD
+   ============================================================ */
+
+async function loadDashboard() {
+
+    try {
+
+        /*
+         * Load persisted workflows.
+         */
+
+        const workflowData =
+            await api("/workflows");
+
+
+        const workflows =
+            workflowData.workflows || [];
+
+
+        updateStats(workflows);
+
+
+        /*
+         * If an active workflow exists,
+         * show the active automation.
+         */
+
+        const active =
+            workflows.filter(
+                workflow =>
+                    workflow.status === "active"
+            );
+
+
+        if (active.length > 0) {
+
+            renderActiveWorkflow(
+                active[0]
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * No active workflow.
+         * Ask discovery/recommendation engine
+         * whether a repeated workflow has been detected.
+         */
+
+        const recommendationData =
+            await api("/recommendations");
+
+
+        const recommendations =
+            recommendationData.recommendations || [];
+
+
+        if (recommendations.length > 0) {
+
+            renderDetectedWorkflow(
+                recommendations[0]
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Nothing detected yet.
+         */
+
+        document.getElementById(
+            "cardTitle"
+        ).textContent =
+            "Observing Activity";
+
+
+        document.getElementById(
+            "cardSubtitle"
+        ).textContent =
+            "WorkFlowOS is looking for repeated workflows.";
+
+
+        document.getElementById(
+            "statusText"
+        ).textContent =
+            "Monitoring";
+
+
+        document.getElementById(
+            "statusBadge"
+        ).className =
+            "badge badge-detected";
+
+
+        document.getElementById(
+            "statusDot"
+        ).className =
+            "dot yellow-dot";
+
+
+        document.getElementById(
+            "automationContent"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                <div style="font-size:32px;margin-bottom:12px;">
+                    👀
+                </div>
+
+                Keep performing your normal workflow.
+
+                <br>
+
+                WorkFlowOS will surface an automation
+                opportunity when it detects repetition.
+
+            </div>
+
+        `;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        document.getElementById(
+            "automationContent"
+        ).innerHTML = `
+
+            <div class="empty error">
+
+                Could not connect to WorkFlowOS.
+
+                <br>
+
+                Make sure the FastAPI backend is running.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/*
+ * Initial load.
+ */
+
+loadDashboard();
+
+
+/*
+ * Automatically check for new activity
+ * every 3 seconds.
+ *
+ * This makes the detection appear live
+ * during the hackathon demo.
+ */
+
+setInterval(
+    loadDashboard,
+    3000
+);
+
+</script>
+
+</body>
+</html>
